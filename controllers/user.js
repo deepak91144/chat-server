@@ -4,17 +4,21 @@ import { cookieOptions, sendToken } from "../utils/features.js";
 import { errorHandler } from "../utils/errorHandler.js";
 
 export const addNewUser = async (req, res, next) => {
-  const { name, userName, email, password, avatar } = req.body;
-  const user = new User({
-    name: name,
-    userName: userName,
-    email: email,
-    password: password,
-    avatar: avatar,
-  });
-  const newUser = await user.save();
+  try {
+    const { name, userName, email, password, avatar } = req.body;
+    const user = new User({
+      name: name,
+      userName: userName,
+      email: email,
+      password: password,
+      avatar: avatar,
+    });
+    const newUser = await user.save();
 
-  sendToken(res, user, 201, "user created");
+    sendToken(res, user, 201, "user created");
+  } catch (error) {
+    return errorHandler(error, 404, req, res);
+  }
 };
 export const login = async (req, res) => {
   const { userName, password } = req.body;
@@ -48,4 +52,32 @@ export const logout = async (req, res) => {
       success: true,
       message: "logout successfully",
     });
+};
+export const fileUpload = (req, res) => {
+  try {
+    if (req.file) {
+      res.status(201).json({
+        success: true,
+        messsage: "file uploaded successfully",
+        file: req.file,
+      });
+    } else {
+      return errorHandler("something went wrong", 404, req, res);
+    }
+  } catch (error) {
+    return errorHandler("something went wrong", 404, req, res);
+  }
+};
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    return res.status(201).json({
+      message: "users fethed",
+      success: true,
+      users,
+    });
+  } catch (error) {
+    return errorHandler("", 404, req, res);
+  }
 };
