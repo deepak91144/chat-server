@@ -6,6 +6,8 @@ export const cookieOptions = {
   secure: true,
 };
 export const sendToken = async (res, user, code, message) => {
+  console.log("user", user._id);
+
   const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
   return res.status(code).cookie("chatAppToken", token, cookieOptions).json({
     success: true,
@@ -13,4 +15,8 @@ export const sendToken = async (res, user, code, message) => {
     message,
     user,
   });
+};
+
+export const emitEvent = (req, event, users, data) => {
+  console.log("emiting event");
 };

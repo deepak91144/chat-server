@@ -1,10 +1,9 @@
-import mongoose, { Schema, models, model, Types } from "mongoose";
+import mongoose, { Schema, Types, model } from "mongoose";
 
 const schema = new Schema(
   {
     name: {
       type: String,
-      required: true,
     },
     groupChat: {
       type: Boolean,

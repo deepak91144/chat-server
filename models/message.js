@@ -1,4 +1,4 @@
-import mongoose, { Schema, models, model, Types } from "mongoose";
+import mongoose, { Schema, model, Types } from "mongoose";
 
 const schema = new Schema(
   {
@@ -17,15 +17,13 @@ const schema = new Schema(
       {
         public_id: {
           type: String,
-          required: true,
         },
         url: {
           type: String,
-          required: true,
         },
       },
     ],
   },
   { timestamps: true }
 );
-export const User = mongoose.models.Message || model("Message", schema);
+export const Message = mongoose.models.Message || model("Message", schema);

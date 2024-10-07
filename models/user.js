@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { Schema, Types, model } from "mongoose";
 import { hash } from "bcrypt";
 const schema = new Schema(
   {
@@ -29,6 +29,13 @@ const schema = new Schema(
         type: String,
       },
     },
+    friends: [
+      {
+        type: Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
   },
   { timestamps: true }
 );
