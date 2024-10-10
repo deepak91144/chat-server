@@ -134,6 +134,7 @@ export const getMyGroups = async (req, res) => {
 
 export const addMember = async (req, res) => {
   const { chatId, members } = req.body;
+  console.log("members_", members);
 
   const chat = await Chat.findById(chatId);
   if (!chat) {
@@ -150,7 +151,12 @@ export const addMember = async (req, res) => {
       res
     );
   }
-  const membersAlreadyExist = await Chat.find({ members: { $in: members } });
+  const membersAlreadyExist = await Chat.find({
+    _id: chatId,
+    members: { $in: members },
+  });
+  console.log("membersAlreadyExist_", membersAlreadyExist);
+
   if (membersAlreadyExist.length > 0) {
     return errorHandler("member already present in the group", 404, req, res);
   }
@@ -180,20 +186,25 @@ export const removeMember = async (req, res) => {
   const { chatId, members } = req.body;
 
   const chat = await Chat.findById(chatId);
+
   if (!chat) {
-    return errorHandler("Chat can not found", 404, req, res);
+    return errorHandler("Chat can not found", 400, req, res);
   }
   if (!chat.groupChat) {
-    return errorHandler("This is not a group chat", 404, req, res);
+    return errorHandler("This is not a group chat", 400, req, res);
   }
   if (chat.creator.toString() !== req.userId.toString()) {
     return errorHandler(
       "Only creator is allowed to remove members",
-      404,
+      400,
       req,
       res
     );
   }
+  if (chat.members.length < 4) {
+    return errorHandler("Group needs at least 3 members", 400, req, res);
+  }
+
   const membersAlreadyExist = await Chat.find({ members: { $in: members } });
   if (membersAlreadyExist.length > 0) {
     const restMembers = chat.members.filter((member, index) => {
@@ -390,6 +401,37 @@ export const chatDetails = async (req, res) => {
     chat,
   });
 };
+
+export const groupDetails = async (req, res) => {
+  const { id } = req.params;
+
+  const chat = await Chat.findOne({ _id: id }).populate(
+    "members",
+    "name avatar"
+  );
+  if (!chat) {
+    return errorHandler("chat does not exist", 401, req, res);
+  }
+  if (!chat.groupChat) {
+    return errorHandler("this is not a group chat", 401, req, res);
+  }
+  const restMemberDetails = getOtherMembers(chat.members, req.userId);
+
+  const memberIds = chat.members.map((ele) => {
+    return ele._id;
+  });
+  chat.members = memberIds;
+
+  let transFormedChats = JSON.parse(JSON.stringify(chat));
+
+  transFormedChats.memberDetails = restMemberDetails;
+  return res.status(200).json({
+    success: true,
+    message: "chat fetched",
+    group: transFormedChats,
+  });
+};
+
 export const renameGroup = async (req, res) => {
   const { chatId, name } = req.body;
 

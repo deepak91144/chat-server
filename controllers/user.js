@@ -1,4 +1,4 @@
-import { compare } from "bcrypt";
+import { compare, hash } from "bcrypt";
 import { User } from "../models/user.js";
 import { Request } from "../models/request.js";
 import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
@@ -38,7 +38,33 @@ export const login = async (req, res) => {
   }
   sendToken(res, user, 201, "login successful");
 };
-
+export const updateUserDetails = async (req, res) => {
+  const { userId, name, userName, email, password, avatar } = req.body;
+  if (password.length != 0 && password.length < 6) {
+    return errorHandler("password must be minimum 6 character", 404, req, res);
+  }
+  const hashedPassword = await hash(password, 10);
+  const userDetails = {
+    name: name,
+    userName: userName,
+    email: email,
+    avatar,
+  };
+  if (password.length > 5) {
+    userDetails.password = hashedPassword;
+  }
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: userId },
+    userDetails,
+    {
+      new: true,
+    }
+  );
+  return res.status(203).json({
+    success: true,
+    message: "user updated",
+  });
+};
 export const getMyProfile = async (req, res) => {
   const userId = req.userId;
   const user = await User.findById(userId);
@@ -152,19 +178,17 @@ export const getMyFriendRequests = async (req, res) => {
   const { receiver } = req.params;
 
   const friendRequests = await Request.find({
-    $and: [
-      {
-        $or: [{ sender: receiver }, { receiver }],
-      },
-      { status: "pending" },
-    ],
+    $and: [{ receiver }, { status: "pending" }],
   }).populate("sender", "name avatar");
-  console.log("friendRequests", friendRequests);
+  const senderIds = friendRequests.map((user) => {
+    return user.sender._id;
+  });
 
   return res.status(200).json({
     success: true,
     message: "fetched friend request",
     friendRequests: friendRequests,
+    friendRequestSenderIds: senderIds,
   });
 };
 

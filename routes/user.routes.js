@@ -10,6 +10,7 @@ import {
   logout,
   myFriends,
   sendFriendRequest,
+  updateUserDetails,
 } from "../controllers/user.js";
 
 import express from "express";
@@ -18,6 +19,7 @@ import { uploadImage } from "../middlewares/file-upload.js";
 const app = express.Router();
 app.post("/addNewUser", addNewUser);
 app.post("/login", login);
+app.put("/update", updateUserDetails);
 app.get("/profile", isAuthenticated, getMyProfile);
 app.get("/logout", logout);
 app.post("/file-upload", uploadImage.single("photo"), fileUpload);
