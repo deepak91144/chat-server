@@ -7,21 +7,21 @@ import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
 import { Chat } from "../models/chat.js";
 
 export const addNewUser = async (req, res, next) => {
-  try {
-    const { name, userName, email, password, avatar } = req.body;
-    const user = new User({
-      name: name,
-      userName: userName,
-      email: email,
-      password: password,
-      avatar: avatar,
-    });
-    const newUser = await user.save();
+  // try {
+  const { name, userName, email, password, avatar } = req.body;
+  const user = new User({
+    name: name,
+    userName: userName,
+    email: email,
+    password: password,
+    avatar: avatar,
+  });
+  const newUser = await user.save();
 
-    sendToken(res, user, 201, "user created");
-  } catch (error) {
-    return errorHandler(error, 404, req, res);
-  }
+  sendToken(res, user, 201, "user created");
+  // } catch (error) {
+  //   return errorHandler(error, 404, req, res);
+  // }
 };
 export const login = async (req, res) => {
   const { userName, password } = req.body;
