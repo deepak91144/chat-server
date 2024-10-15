@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { userSocketIds } from "../app.js";
 
 export const getOtherMembers = (members, userId) => {
   const otherMembers = members.filter((memebr) => {
@@ -27,4 +28,9 @@ export const getAvatar = (users) => {
   });
 
   return _.compact(avatarUrls);
+};
+export const getSockets = (users = []) => {
+  console.log("users", users);
+
+  return users.map((user) => userSocketIds.get(user.toString()));
 };
