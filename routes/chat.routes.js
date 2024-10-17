@@ -10,6 +10,7 @@ import {
   leaveGroup,
   newChat,
   newGroupChat,
+  putLatestChatOnTop,
   removeMember,
   renameGroup,
   sendAttachment,
@@ -32,5 +33,6 @@ app.get("/group/:id", isAuthenticated, groupDetails);
 app.put("/rename-group", isAuthenticated, renameGroup);
 app.delete("/group/delete/:chatId", isAuthenticated, deleteGroup);
 app.get("/message/:chatId", isAuthenticated, gatMessages);
+app.put("/re-arrange/:chatId", putLatestChatOnTop);
 
 export default app;
