@@ -84,6 +84,11 @@ io.on("connection", (socket) => {
       chatId: payload.roomId,
       message: messageForRealTime,
     });
+
+    io.sockets.emit(NEW_MESSAGE_ALERT, {
+      chatId: payload.roomId,
+      count: 1,
+    });
     try {
       await Message.create(messageForDb);
     } catch (error) {
