@@ -1,3 +1,4 @@
+import _ from "lodash";
 import {
   ALERT,
   NEW_ATTACHMENTS,
@@ -67,15 +68,14 @@ export const newChat = async (req, res) => {
 export const getMyChats = async (req, res) => {
   const { userId } = req.params;
   // try {
-  const chats = await Chat.find({ members: userId }).populate(
-    "members",
-    "name avatar"
-  );
+  const chats = await Chat.find({ members: userId })
+    .sort({ createdAt: -1 })
+    .populate("members", "name avatar");
 
   const transFormedChats = chats.map(({ _id, name, members, groupChat }) => {
     //   const otherMembers = getOtherMembers(members, req.userId);
-    const otherMembersName = getOtherMembersName(members, req.userId);
-    const avatarUrls = getAvatarUrls(members, req.userId);
+    const otherMembersName = getOtherMembersName(members, userId);
+    const avatarUrls = getAvatarUrls(members, userId);
     const memberIds = members.map((ele) => {
       return ele._id;
     });
@@ -495,4 +495,17 @@ export const gatMessages = async (req, res) => {
   }
   emitEvent(req, REFETCH_CHATS, chat.members);
   return errorHandler("Internal server error", 500, req, res);
+};
+
+export const putLatestChatOnTop = async (req, res) => {
+  const { chatId } = req.params;
+  const oldChats = await Chat.find();
+  const result = oldChats.filter((chat) => {
+    if (chatId === chat._id.toString()) {
+      return chat;
+    }
+  });
+  oldChats.unshift(result[0]);
+  const uniqueChats = _.uniqBy(oldChats, "_id");
+  console.log("uniqueChats", oldChats);
 };
