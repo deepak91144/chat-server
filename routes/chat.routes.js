@@ -34,7 +34,7 @@ app.put("/rename-group", isAuthenticated, renameGroup);
 app.delete("/group/delete/:chatId", isAuthenticated, deleteGroup);
 app.get("/message/:chatId", isAuthenticated, gatMessages);
 app.put("/re-arrange/:chatId", putLatestChatOnTop);
-app.put("/testing", (req, res) => {
+app.get("/testing", (req, res) => {
   return res.status(200).json({
     data: "working",
   });
