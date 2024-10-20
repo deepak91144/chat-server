@@ -31,6 +31,5 @@ export const getAvatar = (users) => {
 };
 export const getSockets = (users = []) => {
   console.log("users", users);
-
   return users.map((user) => userSocketIds.get(user.toString()));
 };
