@@ -144,8 +144,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(443, () => {
-  console.log("server is running on port 400");
+server.listen(8000, () => {
+  console.log("server is running on port 8000");
 });
 // app.listen(8000, () => {
 //   console.log("server is running on port 3000");
