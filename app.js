@@ -17,8 +17,6 @@ app.use(cookieParser());
 import userRoutes from "./routes/user.routes.js";
 import chatrRoutes from "./routes/chat.routes.js";
 import messageRoutes from "./routes/message.routes.js";
-import postRoutes from "./routes/post.routes.js";
-import commentRoutes from "./routes/comment.routes.js";
 import { connectToDb } from "./config/dbConfig.js";
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
 import { getSockets } from "./libs/helpers.js";
@@ -27,8 +25,6 @@ connectToDb();
 app.use("/user", userRoutes);
 app.use("/api/v1/chat", chatrRoutes);
 app.use("/api/v1/message", messageRoutes);
-app.use("/api/v1/post", postRoutes);
-app.use("/api/v1/comment", commentRoutes);
 const userSocketIds = new Map();
 io.on("connection", (socket) => {
   const user = {
@@ -52,12 +48,6 @@ io.on("connection", (socket) => {
       chatId: payload.roomId,
       user: payload.user,
     });
-  });
-
-  socket.on("newPost", (payload) => {
-    console.log("newPost", payload);
-
-    io.emit("newPostAlert", payload);
   });
 
   socket.on("sendMessage", async (payload) => {
@@ -144,8 +134,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(443, () => {
-  console.log("server is running on port 443");
+server.listen(8000, () => {
+  console.log("server is running on port 8000");
 });
 // app.listen(8000, () => {
 //   console.log("server is running on port 3000");
