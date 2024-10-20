@@ -27,6 +27,6 @@ const s3Storage = multerS3({
 export const uploadImage = multer({
   storage: s3Storage,
   limits: {
-    fileSize: 1024 * 1024 * 10, // 10mb file size
+    fileSize: 1024 * 1024 * 100, // 100mb file size
   },
 });
