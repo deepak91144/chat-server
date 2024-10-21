@@ -94,6 +94,7 @@ io.on("connection", (socket) => {
       chatId: payload.roomId,
       message: messageForRealTime,
     });
+    console.log("dewr");
 
     io.sockets.emit(NEW_MESSAGE_ALERT, {
       chatId: payload.roomId,
