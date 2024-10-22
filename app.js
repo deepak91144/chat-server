@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", async (payload) => {
-    console.log(payload);
+    console.log("sendMessage", payload);
     const messageForRealTime = {
       _id: Math.random(),
       content: payload.content,
