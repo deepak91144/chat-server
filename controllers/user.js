@@ -5,6 +5,9 @@ import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
 import { errorHandler } from "../utils/errorHandler.js";
 import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
 import { Chat } from "../models/chat.js";
+import { oauth2Client } from "../utils/googleconfig.js";
+import axios from "axios";
+import { GOOGLE_API_URL } from "../constants/google-constants.js";
 
 export const addNewUser = async (req, res, next) => {
   // try {
@@ -23,6 +26,33 @@ export const addNewUser = async (req, res, next) => {
   //   return errorHandler(error, 404, req, res);
   // }
 };
+
+export const googleLogin = async (req, res) => {
+  const { code } = req.query;
+  const googleResponse = await oauth2Client.getToken(code);
+  oauth2Client.setCredentials(googleResponse.tokens);
+  const userResult = await axios.get(
+    `${GOOGLE_API_URL}${googleResponse.tokens.access_token}`
+  );
+  if (userResult) {
+    const { name, email, picture } = userResult.data;
+    let user = await User.findOne({ email: email });
+
+    if (!user) {
+      user = new User({
+        name: name,
+        userName: name,
+        email: email,
+        isGoogleLogin: true,
+        avatar: { url: picture },
+      });
+      await user.save();
+    }
+
+    sendToken(res, user, 201, "user created");
+  }
+};
+
 export const login = async (req, res) => {
   const { userName, password } = req.body;
 

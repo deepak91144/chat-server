@@ -15,7 +15,12 @@ export const createPost = async (req, res) => {
 };
 
 export const fetchPosts = async (req, res) => {
+  const { limit, skip } = req.query;
+  // const totalRecord = await Post.count({});
+
   const posts = await Post.find()
+    .skip(skip)
+    .limit(limit)
     .sort({ createdAt: -1 })
     .populate("creator", "name");
   if (posts) {
@@ -23,6 +28,8 @@ export const fetchPosts = async (req, res) => {
       success: true,
       message: "Fetched successfully",
       posts,
+      // totalRecord,
+      hasNext: posts.length === 0 ? false : true,
     });
   }
   return errorHandler("internal server error", 500, req, res);

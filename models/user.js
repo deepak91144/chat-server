@@ -9,7 +9,6 @@ const schema = new Schema(
     userName: {
       type: String,
       required: true,
-      unique: true,
     },
     email: {
       type: String,
@@ -18,8 +17,12 @@ const schema = new Schema(
     },
     password: {
       type: String,
-      required: true,
+
       select: false,
+    },
+    isGoogleLogin: {
+      type: Boolean,
+      default: false,
     },
     avatar: {
       public_id: {

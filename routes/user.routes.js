@@ -6,6 +6,7 @@ import {
   getAllUsers,
   getMyFriendRequests,
   getMyProfile,
+  googleLogin,
   login,
   logout,
   myFriends,
@@ -18,6 +19,7 @@ import { isAuthenticated } from "../middlewares/auth.js";
 import { uploadImage } from "../middlewares/file-upload.js";
 const app = express.Router();
 app.post("/addNewUser", addNewUser);
+app.get("/google-login", googleLogin);
 app.post("/login", login);
 app.put("/update", updateUserDetails);
 app.get("/profile", isAuthenticated, getMyProfile);
