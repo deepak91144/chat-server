@@ -34,6 +34,8 @@ export const googleLogin = async (req, res) => {
   const userResult = await axios.get(
     `${GOOGLE_API_URL}${googleResponse.tokens.access_token}`
   );
+  console.log("r");
+
   if (userResult) {
     const { name, email, picture } = userResult.data;
     let user = await User.findOne({ email: email });
