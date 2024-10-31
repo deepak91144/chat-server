@@ -9,7 +9,7 @@ import { isAuthenticated } from "../middlewares/auth.js";
 const app = express.Router();
 
 app.post("/new", isAuthenticated, createPost);
-app.get("/", isAuthenticated, fetchPosts);
+app.get("/", fetchPosts);
 app.get("/user/:userId", isAuthenticated, fetchPostsByUSerId);
 app.get("/:postId", isAuthenticated, postDetails);
 

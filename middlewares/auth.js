@@ -2,6 +2,7 @@ import { errorHandler } from "../utils/errorHandler.js";
 import jwt from "jsonwebtoken";
 export const isAuthenticated = async (req, res, next) => {
   // implement cookie later
+  // try {
   const token = req.headers.authorization.split(" ")[1];
   if (!token) {
     return errorHandler("token not found", 401, req, res);
@@ -11,5 +12,6 @@ export const isAuthenticated = async (req, res, next) => {
     return errorHandler("invalid access token", 401, req, res);
   }
   req.userId = decodedData._id;
+  // } catch (error) {}
   next();
 };
