@@ -11,6 +11,6 @@ const app = express.Router();
 app.post("/new", isAuthenticated, createPost);
 app.get("/", fetchPosts);
 app.get("/user/:userId", isAuthenticated, fetchPostsByUSerId);
-app.get("/:postId", isAuthenticated, postDetails);
+app.get("/:postId", postDetails);
 
 export default app;
